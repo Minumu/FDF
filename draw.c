@@ -8,6 +8,32 @@ int 	find_abs(int nb)
 		return (nb);
 }
 
+void	recalculate_coord(t_position *pos, t_map *map)
+{
+	int i;
+
+	i = 0;
+	pos->re_coord = (int**)malloc(sizeof(int*) * map->map_x * map->map_y);
+	while (i < map->map_x * map->map_y)
+	{
+		pos->re_coord[i] = malloc(sizeof(int) * 3);
+		pos->re_coord[i][0] = (int) ((pos->coord[i][2] * (sin(pos->alpha) * sin(pos->gamma) +
+				cos(pos->alpha) * cos(pos->gamma) * sin(pos->beta)) -
+				pos->coord[i][1] * (cos(pos->alpha) * sin(pos->gamma) -
+						cos(pos->gamma) * sin(pos->alpha) * sin(pos->beta)) +
+						pos->coord[i][0] * cos(pos->beta) * cos(pos->gamma)) * pos->coef);
+		pos->re_coord[i][1] = (int) ((pos->coord[i][1] * (cos(pos->alpha) * cos(pos->gamma) +
+				sin(pos->alpha) * sin(pos->gamma) * sin(pos->beta)) -
+				pos->coord[i][2] * (sin(pos->alpha) * cos(pos->gamma) -
+						sin(pos->gamma) * cos(pos->alpha) * sin(pos->beta)) +
+						pos->coord[i][0] * cos(pos->beta) * sin(pos->gamma)) * pos->coef);
+		pos->re_coord[i][2] = (int) ((pos->coord[i][2] * cos(pos->alpha) * cos(pos->beta) -
+									  pos->coord[i][0] * sin(pos->beta) +
+									  pos->coord[i][1] * cos(pos->beta) * sin(pos->alpha)) * pos->coef);
+	i++;
+	}
+}
+
 void	find_coord(t_position *pos, t_draw *draw, t_map *map)
 {
 	int i;
@@ -19,10 +45,10 @@ void	find_coord(t_position *pos, t_draw *draw, t_map *map)
 	{
 		if (j + 1 < map->map_x)
 		{
-			pos->x0 = (int) (pos->coord[i][0] * pos->coef - pos->coord[i][2] * pos->coef * cos(-45));
-			pos->x1 = (int) (pos->coord[i + 1][0] * pos->coef - pos->coord[i + 1][2] * pos->coef * cos(-45));
-			pos->y0 = (int) (pos->coord[i][1] * pos->coef - pos->coord[i][2] * pos->coef * cos(-45));
-			pos->y1 = (int) (pos->coord[i + 1][1] * pos->coef - pos->coord[i + 1][2] * pos->coef * cos(-45));
+			pos->x0 = pos->re_coord[i][0]; // - pos->coord[i][2] * pos->coef * cos(-45));
+			pos->x1 = pos->re_coord[i + 1][0]; //- pos->coord[i + 1][2] * pos->coef * cos(-45));
+			pos->y0 = pos->re_coord[i][1]; // - pos->coord[i][2] * pos->coef * cos(-45));
+			pos->y1 = pos->re_coord[i + 1][1]; //- pos->coord[i + 1][2] * pos->coef * cos(-45));
 			j++;
 			draw_line(pos, draw, map);
 		}
@@ -30,10 +56,10 @@ void	find_coord(t_position *pos, t_draw *draw, t_map *map)
 			j = 0;
 		if (i < map->map_x * map->map_y - map->map_x)
 		{
-			pos->x0 = (int) (pos->coord[i][0] * pos->coef - pos->coord[i][2] * pos->coef * cos(-45));
-			pos->x1 = (int) (pos->coord[i + map->map_x][0] * pos->coef - pos->coord[i + map->map_x][2] * pos->coef * cos(-45));
-			pos->y0 = (int) (pos->coord[i][1] * pos->coef - pos->coord[i][2] * pos->coef * cos(-45));
-			pos->y1 = (int) (pos->coord[i + map->map_x][1] * pos->coef - pos->coord[i + map->map_x][2] * pos->coef * cos(-45));
+			pos->x0 = pos->re_coord[i][0]; // - pos->coord[i][2] * pos->coef * cos(-45));
+			pos->x1 = pos->re_coord[i + map->map_x][0]; // - pos->coord[i + map->map_x][2] * pos->coef * cos(-45));
+			pos->y0 = pos->re_coord[i][1]; // - pos->coord[i][2] * pos->coef * cos(-45));
+			pos->y1 = pos->re_coord[i + map->map_x][1]; // - pos->coord[i + map->map_x][2] * pos->coef * cos(-45));
 			draw_line(pos, draw, map);
 		}
 		i++;

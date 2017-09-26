@@ -79,22 +79,61 @@ void	calculate_coefficient(t_all *all)
 	}
 }
 
+int 	key_processing(int keycode, t_all *all)
+{
+	if (keycode == 53)
+		exit(0);
+	if (keycode == 123)
+	{
+		mlx_destroy_image(all->draw->mlx, all->draw->img_w);
+		all->pos->alpha = all->pos->alpha + (M_PI / 180 * 5);
+		do_draw(all);
+	}
+	if (keycode == 124)
+	{
+		mlx_destroy_image(all->draw->mlx, all->draw->img_w);
+		all->pos->alpha = all->pos->alpha - (M_PI / 180 * 5);
+		do_draw(all);
+	}
+	if (keycode == 126)
+	{
+		mlx_destroy_image(all->draw->mlx, all->draw->img_w);
+		all->pos->beta = all->pos->beta + (M_PI / 180 * 5);
+		do_draw(all);
+	}
+	if (keycode == 125)
+	{
+		mlx_destroy_image(all->draw->mlx, all->draw->img_w);
+		all->pos->beta = all->pos->beta - (M_PI / 180 * 5);
+		do_draw(all);
+	}
+	if (keycode == 0)
+	{
+		mlx_destroy_image(all->draw->mlx, all->draw->img_w);
+		all->pos->gamma = all->pos->gamma + (M_PI / 180 * 5);
+		do_draw(all);
+	}
+	if (keycode == 2)
+	{
+		mlx_destroy_image(all->draw->mlx, all->draw->img_w);
+		all->pos->gamma = all->pos->gamma - (M_PI / 180 * 5);
+		do_draw(all);
+	}
+	return (0);
+}
+
 void	do_draw(t_all *all)
 {
-	all->draw = create_empty_draw();
-	all->draw->mlx = mlx_init();
-	all->draw->w = 600;
-	all->draw->h = 600;
-	all->draw->win = mlx_new_window(all->draw->mlx,
-									all->draw->w + 1, all->draw->h + 1, "fdf");
 	all->draw->img_w = mlx_new_image(all->draw->mlx, all->draw->w, all->draw->h);
 	all->draw->img = mlx_get_data_addr(all->draw->img_w, &all->draw->bpp,
 									   &all->draw->size_l, &all->draw->en);
 	printf("SIZE_LINE %d BPP %d\n", all->draw->size_l, all->draw->bpp);
 	calculate_coefficient(all);
+	recalculate_coord(all->pos, all->map);
 	find_coord(all->pos, all->draw, all->map);
 	mlx_put_image_to_window(all->draw->mlx, all->draw->win,
 							all->draw->img_w, 1, 1);
+	mlx_hook(all->draw->win, 2, 5, key_processing, all);
 	mlx_loop(all->draw->mlx);
 }
 
@@ -105,7 +144,7 @@ int		main(void)
 	char *line;
 	t_all *all;
 
-	fd = open("test", O_RDONLY);
+	fd = open("42.fdf", O_RDONLY);
 	line = NULL;
 	all = malloc(sizeof(t_all));
 	all->map = create_empty_map();
@@ -127,6 +166,12 @@ int		main(void)
 	printf("MAP_X  %d\n", all->map->map_x);
 	printf("MAP_Y  %d\n", all->map->map_y);
 	record_coord(all->map, all->pos);
+	all->draw = create_empty_draw();
+	all->draw->mlx = mlx_init();
+	all->draw->w = 600;
+	all->draw->h = 600;
+	all->draw->win = mlx_new_window(all->draw->mlx,
+									all->draw->w + 1, all->draw->h + 1, "fdf");
 	do_draw(all);
 	close(fd);
 	clean_all(all->map, all->pos);

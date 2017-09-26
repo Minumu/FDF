@@ -32,10 +32,16 @@ t_position		*create_empty_position(void)
 	pos = malloc(sizeof(t_position));
 	pos->coord = 0;
 	pos->coef = 1;
+	pos->alpha = M_PI / 4;
+	pos->beta = M_PI / 4;
+	pos->gamma = M_PI / 4;
+	pos->f = 0;
 	pos->x0 = 0;
 	pos->y0 = 0;
+	pos->z0 = 0;
 	pos->x1 = 0;
 	pos->y1 = 0;
+	pos->z1 = 0;
 	pos->x = 0;
 	pos->y = 0;
 	pos->dx = 0;
