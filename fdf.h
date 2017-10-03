@@ -30,19 +30,24 @@ typedef struct	s_position
 {
 	int 		**coord;
 	int 		**re_coord;
-	int			coef;
+	int 		max_z;
+	double		coef;
 	int 		x0;
 	int 		x1;
 	int			y0;
 	int 		y1;
-	int			z0;
+	int 		z0;
 	int 		z1;
 	double		alpha;
 	double		beta;
 	double 		gamma;
-	int 		f;
 	int 		x;
 	int 		y;
+	int 		ox;
+	int 		oy;
+	int 		dox;
+	int 		doy;
+	double 		dcoef;
 	int 		dx;
 	int 		dy;
 	int			sx;
@@ -59,12 +64,13 @@ typedef struct	s_all
 t_map		*create_empty_map(void);
 t_position		*create_empty_position(void);
 t_draw	*create_empty_draw(void);
+int 	find_abs(int nb);
 void	do_draw(t_all *all);
 
 void	find_coord(t_position *pos, t_draw *draw, t_map *map);
 void	recalculate_coord(t_position *pos, t_map *map);
 
-void	draw_line(t_position *pos, t_draw *draw, t_map *map);
+void	draw_line(t_position *pos, t_draw *draw, int k);
 
 char	**ft_strjoin_double_arr(char **s1, char **s2);
 char	**ft_strdup_double_arr(char **src);

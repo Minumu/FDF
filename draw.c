@@ -17,7 +17,7 @@ void	recalculate_coord(t_position *pos, t_map *map)
 	while (i < map->map_x * map->map_y)
 	{
 		pos->re_coord[i] = malloc(sizeof(int) * 3);
-		pos->re_coord[i][0] = (int) ((pos->coord[i][2] * (sin(pos->alpha) * sin(pos->gamma) +
+		pos->re_coord[i][0] = (int) ((pos->coord[i][2]  * (sin(pos->alpha) * sin(pos->gamma) +
 				cos(pos->alpha) * cos(pos->gamma) * sin(pos->beta)) -
 				pos->coord[i][1] * (cos(pos->alpha) * sin(pos->gamma) -
 						cos(pos->gamma) * sin(pos->alpha) * sin(pos->beta)) +
@@ -45,38 +45,44 @@ void	find_coord(t_position *pos, t_draw *draw, t_map *map)
 	{
 		if (j + 1 < map->map_x)
 		{
-			pos->x0 = pos->re_coord[i][0]; // - pos->coord[i][2] * pos->coef * cos(-45));
-			pos->x1 = pos->re_coord[i + 1][0]; //- pos->coord[i + 1][2] * pos->coef * cos(-45));
-			pos->y0 = pos->re_coord[i][1]; // - pos->coord[i][2] * pos->coef * cos(-45));
-			pos->y1 = pos->re_coord[i + 1][1]; //- pos->coord[i + 1][2] * pos->coef * cos(-45));
+			pos->x0 = pos->re_coord[i][0];
+			pos->x1 = pos->re_coord[i + 1][0];
+			pos->y0 = pos->re_coord[i][1];
+			pos->y1 = pos->re_coord[i + 1][1];
+			pos->z0 = pos->coord[i][2];
+			pos->z1 = pos->coord[i + 1][2];
 			j++;
-			draw_line(pos, draw, map);
+			draw_line(pos, draw, i);
 		}
 		else if (i < map->map_x * map->map_y)
 			j = 0;
 		if (i < map->map_x * map->map_y - map->map_x)
 		{
-			pos->x0 = pos->re_coord[i][0]; // - pos->coord[i][2] * pos->coef * cos(-45));
-			pos->x1 = pos->re_coord[i + map->map_x][0]; // - pos->coord[i + map->map_x][2] * pos->coef * cos(-45));
-			pos->y0 = pos->re_coord[i][1]; // - pos->coord[i][2] * pos->coef * cos(-45));
-			pos->y1 = pos->re_coord[i + map->map_x][1]; // - pos->coord[i + map->map_x][2] * pos->coef * cos(-45));
-			draw_line(pos, draw, map);
+			pos->x0 = pos->re_coord[i][0];
+			pos->x1 = pos->re_coord[i + map->map_x][0];
+			pos->y0 = pos->re_coord[i][1];
+			pos->y1 = pos->re_coord[i + map->map_x][1];
+			pos->z0 = pos->coord[i][2];
+			pos->z1 = pos->coord[i + map->map_x][2];
+			draw_line(pos, draw, i);
 		}
 		i++;
 	}
 }
 
-void	my_putpixel(t_draw *draw, t_map *map, t_position *pos, int x, int y)
+void	my_putpixel(t_draw *draw, t_position *pos, int x, int y, int i)
 {
 
-	x = draw->w / 2 - ((map->map_x - 1) * pos->coef) / 2 + x - 1;
-	y = draw->h / 2 - ((map->map_y - 1) * pos->coef) / 2 + y - 1;
-	*(draw->img + (y * draw->size_l + x * (draw->bpp / 8))) = (char)255;
-	*(draw->img + (y * draw->size_l + x * (draw->bpp / 8)) + 1) = (char)255;
-	*(draw->img + (y * draw->size_l + x * (draw->bpp / 8)) + 2) = (char)255;
+	x = pos->ox + x;
+	y = pos->oy + y;
+	if (x <= 0 || y <= 0 || x >= draw->w || y >= draw->h)
+		return ;
+	*(draw->img + (y * draw->size_l + x * (draw->bpp / 8))) = (char)(pos->coord[i][3]);
+	*(draw->img + (y * draw->size_l + x * (draw->bpp / 8)) + 1) = (char)(pos->coord[i][4]);
+	*(draw->img + (y * draw->size_l + x * (draw->bpp / 8)) + 2) = (char)(pos->coord[i][5]);
 }
 
-void	draw_line(t_position *pos, t_draw *draw, t_map *map)
+void	draw_line(t_position *pos, t_draw *draw, int k)
 {
 	int d;
 	int d1;
@@ -93,7 +99,7 @@ void	draw_line(t_position *pos, t_draw *draw, t_map *map)
 		d = 2 * pos->dy - pos->dx;
 		d1 = 2 * pos->dy;
 		d2 = (pos->dy - pos->dx) * 2;
-		my_putpixel(draw, map, pos, pos->x0, pos->y0);
+		my_putpixel(draw, pos, pos->x0, pos->y0, k);
 		pos->x = pos->x0 + pos->sx;
 		pos->y = pos->y0;
 		while (i <= pos->dx)
@@ -105,7 +111,7 @@ void	draw_line(t_position *pos, t_draw *draw, t_map *map)
 			}
 			else
 				d = d + d1;
-			my_putpixel(draw, map, pos, pos->x, pos->y);
+			my_putpixel(draw, pos, pos->x, pos->y, k);
 			i++;
 			pos->x = pos->x + pos->sx;
 		}
@@ -115,7 +121,7 @@ void	draw_line(t_position *pos, t_draw *draw, t_map *map)
 		d = 2 * pos->dx - pos->dy;
 		d1 = 2 * pos->dx;
 		d2 = (pos->dx - pos->dy) * 2;
-		my_putpixel(draw, map, pos, pos->x0, pos->y0);
+		my_putpixel(draw, pos, pos->x0, pos->y0, k);
 		pos->x = pos->x0;
 		pos->y = pos->y0 + pos->sy;
 		while (i <= pos->dy)
@@ -127,7 +133,7 @@ void	draw_line(t_position *pos, t_draw *draw, t_map *map)
 			}
 			else
 				d = d + d1;
-			my_putpixel(draw, map, pos, pos->x, pos->y);
+			my_putpixel(draw, pos, pos->x, pos->y, k);
 			i++;
 			pos->y = pos->y + pos->sy;
 		}
