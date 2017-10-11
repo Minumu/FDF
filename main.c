@@ -70,34 +70,10 @@ void	record_coord(t_map *map, t_position *pos)
 	record_color(map, pos);
 }
 
-int 	count_line_length(char *line, t_map *map)
-{
-	char **split;
-	char **temp;
-	int len;
-
-	split = ft_strsplit(line, ' ');
-	len = 0;
-	while (split[len])
-		len++;
-	if (map->map == NULL)
-		map->map = ft_strdup_double_arr(split);
-	else
-	{
-		temp = ft_strdup_double_arr(map->map);
-		free_double_arr(map->map);
-		map->map = ft_strjoin_double_arr(temp, split);
-		free_double_arr(temp);
-	}
-	map->map_y++;
-	free_double_arr(split);
-	return (len);
-}
-
 void	calculate_coefficient(t_all *all)
 {
-	all->pos->coef = (sqrt(all->draw->h * all->draw->w /
-								 (all->map->map_x * all->map->map_y * 4)));
+	all->pos->coef = sqrt((double)(all->draw->h * all->draw->w) /
+								 ((double)(all->map->map_x * all->map->map_y * 4)));
 	if (all->pos->max_z * all->pos->coef > all->draw->h / 2)
 		all->pos->coef = all->draw->h / 2 / all->pos->max_z;
 	all->pos->dcoef = 10 * all->pos->coef / 100;
@@ -111,42 +87,36 @@ int 	key_processing(int keycode, t_all *all)
 	{
 		mlx_destroy_image(all->draw->mlx, all->draw->img_w);
 		all->pos->alpha = all->pos->alpha + (M_PI / 180 * 5);
-		printf("A %f \n", all->pos->alpha);
 		do_draw(all);
 	}
 	if (keycode == 124)
 	{
 		mlx_destroy_image(all->draw->mlx, all->draw->img_w);
 		all->pos->alpha = all->pos->alpha - (M_PI / 180 * 5);
-		printf("A %f \n", all->pos->alpha);
 		do_draw(all);
 	}
 	if (keycode == 126)
 	{
 		mlx_destroy_image(all->draw->mlx, all->draw->img_w);
 		all->pos->beta = all->pos->beta + (M_PI / 180 * 5);
-		printf("B %f \n", all->pos->beta);
 		do_draw(all);
 	}
 	if (keycode == 125)
 	{
 		mlx_destroy_image(all->draw->mlx, all->draw->img_w);
 		all->pos->beta = all->pos->beta - (M_PI / 180 * 5);
-		printf("B %f \n", all->pos->beta);
 		do_draw(all);
 	}
 	if (keycode == 0)
 	{
 		mlx_destroy_image(all->draw->mlx, all->draw->img_w);
 		all->pos->gamma = all->pos->gamma + (M_PI / 180 * 5);
-		printf("G %f \n", all->pos->gamma);
 		do_draw(all);
 	}
 	if (keycode == 2)
 	{
 		mlx_destroy_image(all->draw->mlx, all->draw->img_w);
 		all->pos->gamma = all->pos->gamma - (M_PI / 180 * 5);
-		printf("G %f \n", all->pos->gamma);
 		do_draw(all);
 	}
 	if (keycode == 13)
@@ -213,7 +183,6 @@ void	do_draw(t_all *all)
 	all->draw->img_w = mlx_new_image(all->draw->mlx, all->draw->w, all->draw->h);
 	all->draw->img = mlx_get_data_addr(all->draw->img_w, &all->draw->bpp,
 									   &all->draw->size_l, &all->draw->en);
-	printf("SIZE_LINE %d BPP %d\n", all->draw->size_l, all->draw->bpp);
 	recalculate_coord(all->pos, all->map);
 	find_coord(all->pos, all->draw, all->map);
 	mlx_put_image_to_window(all->draw->mlx, all->draw->win,
@@ -229,13 +198,15 @@ int		main(void)
 	char *line;
 	t_all *all;
 
-	fd = open("maps/mars.fdf", O_RDONLY);
+	fd = open("maps/elem-col.fdf", O_RDONLY);
 	line = NULL;
 	all = malloc(sizeof(t_all));
 	all->map = create_empty_map();
 	all->pos = create_empty_position();
 	while (get_next_line(fd, &line))
 	{
+		if (!valid_line(line))
+			return (0);
 		len = count_line_length(line, all->map);
 		if (all->map->map_x == 0)
 			all->map->map_x = len;
@@ -248,8 +219,6 @@ int		main(void)
 		ft_strdel(&line);
 	}
 	ft_strdel(&line);
-	printf("MAP_X  %d\n", all->map->map_x);
-	printf("MAP_Y  %d\n", all->map->map_y);
 	record_coord(all->map, all->pos);
 	all->draw = create_empty_draw();
 	all->draw->mlx = mlx_init();

@@ -64,6 +64,10 @@ typedef struct	s_all
 t_map		*create_empty_map(void);
 t_position		*create_empty_position(void);
 t_draw	*create_empty_draw(void);
+
+int 	count_line_length(char *line, t_map *map);
+int 	valid_line(char *line);
+
 int 	find_abs(int nb);
 void	do_draw(t_all *all);
 
