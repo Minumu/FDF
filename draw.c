@@ -77,9 +77,9 @@ void	my_putpixel(t_draw *draw, t_position *pos, int x, int y, int i)
 	y = pos->oy + y;
 	if (x <= 0 || y <= 0 || x >= draw->w || y >= draw->h)
 		return ;
-	*(draw->img + (y * draw->size_l + x * (draw->bpp / 8))) = (char)(pos->coord[i][3]);
+	*(draw->img + (y * draw->size_l + x * (draw->bpp / 8))) = (char)(pos->coord[i][5]);
 	*(draw->img + (y * draw->size_l + x * (draw->bpp / 8)) + 1) = (char)(pos->coord[i][4]);
-	*(draw->img + (y * draw->size_l + x * (draw->bpp / 8)) + 2) = (char)(pos->coord[i][5]);
+	*(draw->img + (y * draw->size_l + x * (draw->bpp / 8)) + 2) = (char)(pos->coord[i][3]);
 }
 
 void	draw_line(t_position *pos, t_draw *draw, int k)

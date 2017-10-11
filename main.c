@@ -42,6 +42,64 @@ void	record_color(t_map *map, t_position *pos)
 	}
 }
 
+int 	hex_to_decimal(char *line, int i)
+{
+	int dec;
+	int j;
+	char *hex = "0123456789abcdef";
+
+	j = 0;
+	dec = 0;
+	while (hex[j])
+	{
+		if (line[i] == hex[j] || line[i] == ft_toupper(hex[j]))
+		{
+			dec = (int) (pow(16, 1) * j);
+			j = 0;
+			while (hex[j])
+			{
+				if (line[i + 1] == hex[j] || line[i + 1] == ft_toupper(hex[j]))
+				{
+					dec += (int) (pow(16, 0) * j);
+					return (dec);
+				}
+				j++;
+			}
+		}
+		j++;
+	}
+	return (0);
+}
+
+void	record_static_color(char *line, t_position *pos, int i)
+{
+	int j;
+	int c;
+
+	j = 0;
+	c = 3;
+	pos->coord[i][3] = 255;
+	pos->coord[i][4] = 255;
+	pos->coord[i][5] = 255;
+	while (line[j] && line[j] != 'x')
+		j++;
+	if (line[j] == '\0')
+		return ;
+	j++;
+	while (line[j] && c <= 5)
+	{
+		pos->coord[i][c] = hex_to_decimal(line, j);
+		c++;
+		j += 2;
+		if (line[j] == '\0')
+		{
+			pos->coord[i][c] = 0;
+			if (++c == 5)
+				pos->coord[i][c] = 0;
+		}
+	}
+}
+
 void	record_coord(t_map *map, t_position *pos)
 {
 	int i;
@@ -56,10 +114,12 @@ void	record_coord(t_map *map, t_position *pos)
 		x = 0;
 		while (x < map->map_x && map->map[i])
 		{
+
 			pos->coord[i] = (int*)malloc(sizeof(int) * 6);
 			pos->coord[i][0] = x;
 			pos->coord[i][1] = y;
 			pos->coord[i][2] = ft_atoi(map->map[i]);
+			record_static_color(map->map[i], pos, i);
 			if (find_abs(pos->coord[i][2]) > pos->max_z)
 				pos->max_z = find_abs(pos->coord[i][2]);
 			x++;
@@ -67,7 +127,7 @@ void	record_coord(t_map *map, t_position *pos)
 		}
 		y++;
 	}
-	record_color(map, pos);
+	//record_color(map, pos);
 }
 
 void	calculate_coefficient(t_all *all)
