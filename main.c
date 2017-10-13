@@ -13,33 +13,42 @@ void	record_color(t_map *map, t_position *pos)
 		x = 0;
 		while (x < map->map_x && map->map[i])
 		{
-			if (pos->coord[i][2] == 0)
+			if (pos->coord[i][2] >= 0 && pos->coord[i][2] < pos->max_z / 4)
+			{
+				pos->coord[i][3] = 255 - (255 - 45) / (pos->max_z / 4) * pos->coord[i][2];
+				pos->coord[i][4] = 255 - (255 - 166) / (pos->max_z / 4) * pos->coord[i][2];
+				pos->coord[i][5] = 255 - (255 - 72) / (pos->max_z / 4) * pos->coord[i][2];
+			}
+			else if (pos->coord[i][2] == pos->max_z)
 			{
 				pos->coord[i][3] = 255;
-				pos->coord[i][4] = 255;
-				pos->coord[i][5] = 255;
-			}
-			else if (pos->coord[i][2] < 0)
-			{
-				pos->coord[i][3] = 255 - ((-pos->coord[i][2] - 1) * 130 / pos->max_z);
-				pos->coord[i][4] = 255 - ((-pos->coord[i][2] - 1) * 255 / pos->max_z);
-				pos->coord[i][5] = 0;
-				if (pos->coord[i][4] < 0)
-					pos->coord[i][4] = 0;
-			}
-			else if (pos->coord[i][2] > 0)
-			{
-				pos->coord[i][3] = 0;
 				pos->coord[i][4] = 0;
-				pos->coord[i][5] = 130 + ((pos->coord[i][2] - 1) * 130 / pos->max_z);
-				if (pos->coord[i][4] > 255)
-					pos->coord[i][4] = 255;
+				pos->coord[i][5] = 0;
+			}
+			else if (pos->coord[i][2] >= pos->max_z / 2 && pos->coord[i][2] < pos->max_z)
+			{
+				pos->coord[i][3] = (255 - 81) / (pos->max_z / 2) * (pos->coord[i][2] -
+						pos->max_z / 2) + 81;
+				pos->coord[i][4] = 33 - 33 / (pos->max_z / 2) * (pos->coord[i][2] -
+						pos->max_z / 2);
+				pos->coord[i][5] = 30 - 30 / (pos->max_z / 2) * (pos->coord[i][2] -
+						pos->max_z / 2);
+			}
+			else if (pos->coord[i][2] >= pos->max_z / 4 && pos->coord[i][2] < pos->max_z / 2)
+			{
+				pos->coord[i][3] = (81 - 45) / (pos->max_z / 4) * (pos->coord[i][2] -
+						pos->max_z / 4) + 45;
+				pos->coord[i][4] = 166 - (166 - 33) / (pos->max_z / 4) * (pos->coord[i][2] -
+						pos->max_z / 4);
+				pos->coord[i][5] = 72 - (72 - 30) / (pos->max_z / 4) * (pos->coord[i][2] -
+						pos->max_z / 4);
 			}
 			x++;
 			i++;
 		}
 		y++;
 	}
+
 }
 
 int 	hex_to_decimal(char *line, int i)
@@ -119,7 +128,7 @@ void	record_coord(t_map *map, t_position *pos)
 			pos->coord[i][0] = x;
 			pos->coord[i][1] = y;
 			pos->coord[i][2] = ft_atoi(map->map[i]);
-			record_static_color(map->map[i], pos, i);
+			//record_static_color(map->map[i], pos, i);
 			if (find_abs(pos->coord[i][2]) > pos->max_z)
 				pos->max_z = find_abs(pos->coord[i][2]);
 			x++;
@@ -127,7 +136,7 @@ void	record_coord(t_map *map, t_position *pos)
 		}
 		y++;
 	}
-	//record_color(map, pos);
+	record_color(map, pos);
 }
 
 void	calculate_coefficient(t_all *all)
@@ -258,7 +267,7 @@ int		main(void)
 	char *line;
 	t_all *all;
 
-	fd = open("maps/elem-fract.fdf", O_RDONLY);
+	fd = open("maps/42.fdf", O_RDONLY);
 	line = NULL;
 	all = malloc(sizeof(t_all));
 	all->map = create_empty_map();
