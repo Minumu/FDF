@@ -258,7 +258,7 @@ int		main(void)
 	char *line;
 	t_all *all;
 
-	fd = open("maps/elem-col.fdf", O_RDONLY);
+	fd = open("maps/elem-fract.fdf", O_RDONLY);
 	line = NULL;
 	all = malloc(sizeof(t_all));
 	all->map = create_empty_map();

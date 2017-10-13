@@ -36,8 +36,9 @@ typedef struct	s_position
 	int 		x1;
 	int			y0;
 	int 		y1;
-	int 		z0;
-	int 		z1;
+	double 		color0[3];
+	double 		color1[3];
+	double		delcol[3];
 	double		alpha;
 	double		beta;
 	double 		gamma;

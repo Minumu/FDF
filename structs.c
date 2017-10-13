@@ -40,8 +40,6 @@ t_position		*create_empty_position(void)
 	pos->y0 = 0;
 	pos->x1 = 0;
 	pos->y1 = 0;
-	pos->z0 = 0;
-	pos->z1 = 0;
 	pos->x = 0;
 	pos->y = 0;
 	pos->ox = 0;
