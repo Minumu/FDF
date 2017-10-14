@@ -31,6 +31,7 @@ typedef struct	s_position
 	int 		**coord;
 	int 		**re_coord;
 	int 		max_z;
+	int			min_z;
 	double		coef;
 	int 		x0;
 	int 		x1;

@@ -29,7 +29,7 @@ int 	is_digit(char *line, int *i)
 	if (line[(*i)] == '-')
 	{
 		if (line[(*i) + 1] >= 48 && line[(*i) + 1] <= 57)
-			i++;
+			(*i)++;
 		else
 			return (0);
 	}

@@ -13,13 +13,19 @@ void	record_color(t_map *map, t_position *pos)
 		x = 0;
 		while (x < map->map_x && map->map[i])
 		{
-			if (pos->coord[i][2] >= 0 && pos->coord[i][2] < pos->max_z / 4)
+			if (pos->coord[i][2] == 0)
 			{
-				pos->coord[i][3] = 255 - (255 - 45) / (pos->max_z / 4) * pos->coord[i][2];
-				pos->coord[i][4] = 255 - (255 - 166) / (pos->max_z / 4) * pos->coord[i][2];
-				pos->coord[i][5] = 255 - (255 - 72) / (pos->max_z / 4) * pos->coord[i][2];
+				pos->coord[i][3] = 255;
+				pos->coord[i][4] = 255;
+				pos->coord[i][5] = 255;
 			}
-			else if (pos->coord[i][2] == pos->max_z)
+			else if (pos->coord[i][2] < 0 && pos->coord[i][2] >= pos->min_z)
+			{
+				pos->coord[i][3] = 255 - (255 / find_abs(pos->min_z) * find_abs(pos->coord[i][2]));
+				pos->coord[i][4] = 255 - (255 / find_abs(pos->min_z) * find_abs(pos->coord[i][2]));
+				pos->coord[i][5] = 255;
+			}
+			else if (pos->coord[i][2] == pos->max_z && pos->coord[i][2] > 0)
 			{
 				pos->coord[i][3] = 255;
 				pos->coord[i][4] = 0;
@@ -27,21 +33,27 @@ void	record_color(t_map *map, t_position *pos)
 			}
 			else if (pos->coord[i][2] >= pos->max_z / 2 && pos->coord[i][2] < pos->max_z)
 			{
-				pos->coord[i][3] = (255 - 81) / (pos->max_z / 2) * (pos->coord[i][2] -
-						pos->max_z / 2) + 81;
-				pos->coord[i][4] = 33 - 33 / (pos->max_z / 2) * (pos->coord[i][2] -
-						pos->max_z / 2);
-				pos->coord[i][5] = 30 - 30 / (pos->max_z / 2) * (pos->coord[i][2] -
-						pos->max_z / 2);
+				pos->coord[i][3] = 255; // (pos->max_z / 2) * (pos->coord[i][2] -
+																	//pos->max_z / 2) + 138;
+				pos->coord[i][4] = 255 - 255 / (pos->max_z / 2) * (pos->coord[i][2] -
+																 pos->max_z / 2);
+				pos->coord[i][5] = 0; //48 - 48 / (pos->max_z / 2) * (pos->coord[i][2] -
+																 //pos->max_z / 2);
 			}
 			else if (pos->coord[i][2] >= pos->max_z / 4 && pos->coord[i][2] < pos->max_z / 2)
 			{
-				pos->coord[i][3] = (81 - 45) / (pos->max_z / 4) * (pos->coord[i][2] -
-						pos->max_z / 4) + 45;
-				pos->coord[i][4] = 166 - (166 - 33) / (pos->max_z / 4) * (pos->coord[i][2] -
-						pos->max_z / 4);
-				pos->coord[i][5] = 72 - (72 - 30) / (pos->max_z / 4) * (pos->coord[i][2] -
-						pos->max_z / 4);
+				pos->coord[i][3] = (255 - 45) / (pos->max_z / 4) * (pos->coord[i][2] -
+																   pos->max_z / 4) + 45;
+				pos->coord[i][4] = 166 + (255 - 166) / (pos->max_z / 4) * (pos->coord[i][2] -
+																		  pos->max_z / 4);
+				pos->coord[i][5] = 72 - 72 / (pos->max_z / 4) * (pos->coord[i][2] -
+																		pos->max_z / 4);
+			}
+			else if (pos->coord[i][2] > 0 && pos->coord[i][2] < pos->max_z / 4)
+			{
+				pos->coord[i][3] = 255 - (255 - 45) / (pos->max_z / 4) * pos->coord[i][2];
+				pos->coord[i][4] = 255 - (255 - 166) / (pos->max_z / 4) * pos->coord[i][2];
+				pos->coord[i][5] = 255 - (255 - 72) / (pos->max_z / 4) * pos->coord[i][2];
 			}
 			x++;
 			i++;
@@ -129,8 +141,10 @@ void	record_coord(t_map *map, t_position *pos)
 			pos->coord[i][1] = y;
 			pos->coord[i][2] = ft_atoi(map->map[i]);
 			//record_static_color(map->map[i], pos, i);
-			if (find_abs(pos->coord[i][2]) > pos->max_z)
-				pos->max_z = find_abs(pos->coord[i][2]);
+			if (pos->coord[i][2] > pos->max_z)
+				pos->max_z = pos->coord[i][2];
+			if (pos->coord[i][2] < pos->min_z)
+				pos->min_z = pos->coord[i][2];
 			x++;
 			i++;
 		}
@@ -156,36 +170,42 @@ int 	key_processing(int keycode, t_all *all)
 	{
 		mlx_destroy_image(all->draw->mlx, all->draw->img_w);
 		all->pos->alpha = all->pos->alpha + (M_PI / 180 * 5);
+		printf("alpha %f   \n", all->pos->alpha / M_PI * 180);
 		do_draw(all);
 	}
 	if (keycode == 124)
 	{
 		mlx_destroy_image(all->draw->mlx, all->draw->img_w);
 		all->pos->alpha = all->pos->alpha - (M_PI / 180 * 5);
+		printf("alpha %f   \n", all->pos->alpha / M_PI * 180);
 		do_draw(all);
 	}
 	if (keycode == 126)
 	{
 		mlx_destroy_image(all->draw->mlx, all->draw->img_w);
 		all->pos->beta = all->pos->beta + (M_PI / 180 * 5);
+		printf("beta %f   \n", all->pos->beta / M_PI * 180);
 		do_draw(all);
 	}
 	if (keycode == 125)
 	{
 		mlx_destroy_image(all->draw->mlx, all->draw->img_w);
 		all->pos->beta = all->pos->beta - (M_PI / 180 * 5);
+		printf("beta %f   \n", all->pos->beta / M_PI * 180);
 		do_draw(all);
 	}
 	if (keycode == 0)
 	{
 		mlx_destroy_image(all->draw->mlx, all->draw->img_w);
 		all->pos->gamma = all->pos->gamma + (M_PI / 180 * 5);
+		printf("gamma %f   \n", all->pos->gamma / M_PI * 180);
 		do_draw(all);
 	}
 	if (keycode == 2)
 	{
 		mlx_destroy_image(all->draw->mlx, all->draw->img_w);
 		all->pos->gamma = all->pos->gamma - (M_PI / 180 * 5);
+		printf("gamma %f   \n", all->pos->gamma / M_PI * 180);
 		do_draw(all);
 	}
 	if (keycode == 13)
@@ -267,7 +287,7 @@ int		main(void)
 	char *line;
 	t_all *all;
 
-	fd = open("maps/42.fdf", O_RDONLY);
+	fd = open("maps/10-70.fdf", O_RDONLY);
 	line = NULL;
 	all = malloc(sizeof(t_all));
 	all->map = create_empty_map();

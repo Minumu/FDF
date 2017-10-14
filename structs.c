@@ -36,6 +36,7 @@ t_position		*create_empty_position(void)
 	pos->beta = -M_PI * 2.16;
 	pos->gamma = 0;
 	pos->max_z = 0;
+	pos->min_z = 0;
 	pos->x0 = 0;
 	pos->y0 = 0;
 	pos->x1 = 0;
