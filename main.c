@@ -73,6 +73,27 @@ int		check_map(int fd, t_all *all)
 	return (1);
 }
 
+void	init_image(t_all *all, char av[1])
+{
+	int i;
+
+	i = 0;
+	all->draw->mlx = mlx_init();
+	all->draw->win = mlx_new_window(all->draw->mlx,
+									all->draw->w + 1, all->draw->h + 1, &av[1]);
+	record_coord(all->map, all->pos);
+	if (all->map->color == 0)
+		record_color(all->map, all->pos);
+	centering(all);
+	all->pos->re_coord = (int**)malloc(sizeof(int*) * all->map->map_x * all->map->map_y);
+	while (i < all->map->map_x * all->map->map_y)
+	{
+		all->pos->re_coord[i] = malloc(sizeof(int) * 3);
+		i++;
+	}
+	do_draw(all);
+}
+
 int		main(int ac, char **av)
 {
 	int		fd;
@@ -91,13 +112,6 @@ int		main(int ac, char **av)
 	all = init_all();
 	if (check_map(fd, all) == 0)
 		return (0);
-	all->draw->mlx = mlx_init();
-	all->draw->win = mlx_new_window(all->draw->mlx,
-									all->draw->w + 1, all->draw->h + 1, av[1]);
-	record_coord(all->map, all->pos);
-	if (all->map->color == 0)
-		record_color(all->map, all->pos);
-	centering(all);
-	do_draw(all);
+	init_image(all, av[1]);
 	return (0);
 }

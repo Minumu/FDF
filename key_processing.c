@@ -42,7 +42,7 @@ int		key_processing(int keycode, t_all *all)
 {
 	if (keycode == 53)
 	{
-
+		mlx_destroy_window(all->draw->mlx, all->draw->win);
 		exit(0);
 	}
 	if (keycode == 13)

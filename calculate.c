@@ -26,10 +26,8 @@ void	recalculate_coord(t_position *pos, t_map *map)
 	int i;
 
 	i = 0;
-	pos->re_coord = (int**)malloc(sizeof(int*) * map->map_x * map->map_y);
 	while (i < map->map_x * map->map_y)
 	{
-		pos->re_coord[i] = malloc(sizeof(int) * 3);
 		pos->re_coord[i][0] = (int)((pos->coor[i][2] * (sin(pos->alpha) *
 				sin(pos->gamma) + cos(pos->alpha) * cos(pos->gamma) *
 				sin(pos->beta)) - pos->coor[i][1] * (cos(pos->alpha) *
