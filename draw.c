@@ -28,16 +28,16 @@ void	recalculate_coord(t_position *pos, t_map *map)
 		pos->re_coord[i][0] = (int) ((pos->coord[i][2]  * (sin(pos->alpha) * sin(pos->gamma) +
 				cos(pos->alpha) * cos(pos->gamma) * sin(pos->beta)) -
 				pos->coord[i][1] * (cos(pos->alpha) * sin(pos->gamma) -
-						cos(pos->gamma) * sin(pos->alpha) * sin(pos->beta)) +
-						pos->coord[i][0] * cos(pos->beta) * cos(pos->gamma)) * pos->coef);
+				cos(pos->gamma) * sin(pos->alpha) * sin(pos->beta)) +
+				pos->coord[i][0] * cos(pos->beta) * cos(pos->gamma)) * pos->coef);
 		pos->re_coord[i][1] = (int) ((pos->coord[i][1] * (cos(pos->alpha) * cos(pos->gamma) +
 				sin(pos->alpha) * sin(pos->gamma) * sin(pos->beta)) -
 				pos->coord[i][2] * (sin(pos->alpha) * cos(pos->gamma) -
-						sin(pos->gamma) * cos(pos->alpha) * sin(pos->beta)) +
-						pos->coord[i][0] * cos(pos->beta) * sin(pos->gamma)) * pos->coef);
+				sin(pos->gamma) * cos(pos->alpha) * sin(pos->beta)) +
+				pos->coord[i][0] * cos(pos->beta) * sin(pos->gamma)) * pos->coef);
 		pos->re_coord[i][2] = (int) ((pos->coord[i][2] * cos(pos->alpha) * cos(pos->beta) -
-									  pos->coord[i][0] * sin(pos->beta) +
-									  pos->coord[i][1] * cos(pos->beta) * sin(pos->alpha)) * pos->coef);
+				pos->coord[i][0] * sin(pos->beta) +
+				pos->coord[i][1] * cos(pos->beta) * sin(pos->alpha)) * pos->coef);
 	i++;
 	}
 }
@@ -68,7 +68,7 @@ void	find_coord(t_position *pos, t_draw *draw, t_map *map)
 		if (j + 1 < map->map_x)
 		{
 			record_all_for_draw(pos, i, i + 1);
-			draw_line(pos, draw, i);
+			draw_line(pos, draw);
 			j++;
 		}
 		else if (i < map->map_x * map->map_y)
@@ -76,7 +76,7 @@ void	find_coord(t_position *pos, t_draw *draw, t_map *map)
 		if (i < map->map_x * map->map_y - map->map_x)
 		{
 			record_all_for_draw(pos, i, i + map->map_x);
-			draw_line(pos, draw, i);
+			draw_line(pos, draw);
 		}
 		i++;
 	}
@@ -111,7 +111,7 @@ void	find_delta(t_position *pos)
 	pos->delcol[2] = find_abs_double(pos->color1[2] - pos->color0[2]) / delta;
 }
 
-void	my_putpixel(t_draw *draw, t_position *pos, int x, int y, int i)
+void	my_putpixel(t_draw *draw, t_position *pos, int x, int y)
 {
 	x = pos->ox + x;
 	y = pos->oy + y;
@@ -124,7 +124,7 @@ void	my_putpixel(t_draw *draw, t_position *pos, int x, int y, int i)
 	*(draw->img + (y * draw->size_l + x * (draw->bpp / 8)) + 2) = (char)(pos->color0[0]);
 }
 
-void	draw_line(t_position *pos, t_draw *draw, int k)
+void	draw_line(t_position *pos, t_draw *draw)
 {
 	int d;
 	int d1;
@@ -142,7 +142,7 @@ void	draw_line(t_position *pos, t_draw *draw, int k)
 		d = 2 * pos->dy - pos->dx;
 		d1 = 2 * pos->dy;
 		d2 = (pos->dy - pos->dx) * 2;
-		my_putpixel(draw, pos, pos->x0, pos->y0, k);
+		my_putpixel(draw, pos, pos->x0, pos->y0);
 		pos->x = pos->x0 + pos->sx;
 		pos->y = pos->y0;
 		while (i <= pos->dx)
@@ -154,7 +154,7 @@ void	draw_line(t_position *pos, t_draw *draw, int k)
 			}
 			else
 				d = d + d1;
-			my_putpixel(draw, pos, pos->x, pos->y, k);
+			my_putpixel(draw, pos, pos->x, pos->y);
 			i++;
 			pos->x = pos->x + pos->sx;
 		}
@@ -164,7 +164,7 @@ void	draw_line(t_position *pos, t_draw *draw, int k)
 		d = 2 * pos->dx - pos->dy;
 		d1 = 2 * pos->dx;
 		d2 = (pos->dx - pos->dy) * 2;
-		my_putpixel(draw, pos, pos->x0, pos->y0, k);
+		my_putpixel(draw, pos, pos->x0, pos->y0);
 		pos->x = pos->x0;
 		pos->y = pos->y0 + pos->sy;
 		while (i <= pos->dy)
@@ -176,7 +176,7 @@ void	draw_line(t_position *pos, t_draw *draw, int k)
 			}
 			else
 				d = d + d1;
-			my_putpixel(draw, pos, pos->x, pos->y, k);
+			my_putpixel(draw, pos, pos->x, pos->y);
 			i++;
 			pos->y = pos->y + pos->sy;
 		}

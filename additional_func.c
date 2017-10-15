@@ -1,16 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   func_with_double_arr.c                             :+:      :+:    :+:   */
+/*   additional_func.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tshevchu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/09/01 12:52:59 by tshevchu          #+#    #+#             */
-/*   Updated: 2017/09/01 12:54:05 by tshevchu         ###   ########.fr       */
+/*   Created: 2017/10/15 13:32:41 by tshevchu          #+#    #+#             */
+/*   Updated: 2017/10/15 13:33:10 by tshevchu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
+
+int		find_abs(int nb)
+{
+	if (nb < 0)
+		return (nb * -1);
+	else
+		return (nb);
+}
+
+double	find_abs_double(double nb)
+{
+	if (nb < 0)
+		return (nb * -1);
+	else
+		return (nb);
+}
 
 int		ft_strlen_double_arr(char **str)
 {

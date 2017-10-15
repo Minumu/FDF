@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   structs.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tshevchu <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/10/15 15:11:26 by tshevchu          #+#    #+#             */
+/*   Updated: 2017/10/15 15:12:24 by tshevchu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
 
-t_draw	*create_empty_draw(void)
+t_draw			*init_draw(void)
 {
 	t_draw *draw;
 
@@ -9,12 +21,12 @@ t_draw	*create_empty_draw(void)
 	draw->win = NULL;
 	draw->img_w = NULL;
 	draw->img = NULL;
-	draw->w = 0;
-	draw->h = 0;
+	draw->w = 900;
+	draw->h = 800;
 	return (draw);
 }
 
-t_map		*create_empty_map(void)
+t_map			*init_map(void)
 {
 	t_map *map;
 
@@ -22,31 +34,32 @@ t_map		*create_empty_map(void)
 	map->map = NULL;
 	map->map_x = 0;
 	map->map_y = 0;
+	map->len = 0;
+	map->color = 0;
 	return (map);
 }
 
-t_position		*create_empty_position(void)
+t_position		*init_position(t_draw *draw)
 {
 	t_position *pos;
 
 	pos = malloc(sizeof(t_position));
-	pos->coord = 0;
-	pos->coef = 1;
-	pos->alpha = -M_PI * 1.74;
-	pos->beta = -M_PI * 2.16;
-	pos->gamma = 0;
 	pos->max_z = 0;
 	pos->min_z = 0;
+	pos->coef = 1;
 	pos->x0 = 0;
 	pos->y0 = 0;
 	pos->x1 = 0;
 	pos->y1 = 0;
+	pos->alpha = M_PI * 0.2325;
+	pos->beta = M_PI * 0.09;
+	pos->gamma = 0;
 	pos->x = 0;
 	pos->y = 0;
-	pos->ox = 0;
-	pos->oy = 0;
-	pos->dox = 0;
-	pos->doy = 0;
+	pos->ox = draw->w / 2;
+	pos->oy = draw->h / 2;
+	pos->dox = 10 * pos->ox / 100;
+	pos->doy = 10 * pos->oy / 100;
 	pos->dcoef = 0;
 	pos->dx = 0;
 	pos->dy = 0;
@@ -55,7 +68,18 @@ t_position		*create_empty_position(void)
 	return (pos);
 }
 
-void		free_double_arr(char **arr)
+t_all			*init_all(void)
+{
+	t_all *all;
+
+	all = malloc(sizeof(t_all));
+	all->draw = init_draw();
+	all->map = init_map();
+	all->pos = init_position(all->draw);
+	return (all);
+}
+
+void			free_double_arr(char **arr)
 {
 	int i;
 
@@ -72,11 +96,3 @@ void		free_double_arr(char **arr)
 		free(arr);
 	}
 }
-
-void	clean_all(t_map *map, t_position *pos)
-{
-	free_double_arr(map->map);
-	free(map);
-	free(pos);
-}
-

@@ -1,6 +1,38 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   validation.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tshevchu <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/10/15 15:12:41 by tshevchu          #+#    #+#             */
+/*   Updated: 2017/10/15 15:13:34 by tshevchu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
 
-int 	check_hex(char *line, int *i)
+int		is_error(char *line, t_all *all)
+{
+	if (!line || !valid_line(line))
+	{
+		ft_printf("Oh, this map isn't valid\n");
+		return (0);
+	}
+	all->map->len = count_line_length(line, all->map);
+	if (all->map->map_x == 0)
+		all->map->map_x = all->map->len;
+	else if (all->map->len != all->map->map_x)
+	{
+		ft_printf("Oh, varied lengths of lines in map\n");
+		ft_strdel(&line);
+		return (0);
+	}
+	ft_strdel(&line);
+	return (1);
+}
+
+int		check_hex(char *line, int *i)
 {
 	int col_len;
 
@@ -13,7 +45,7 @@ int 	check_hex(char *line, int *i)
 	{
 		if (((line[(*i)] >= 'a' && line[(*i)] <= 'f') ||
 				(line[(*i)] >= 'A' && line[(*i)] <= 'F') ||
-				ft_isdigit(line[(*i)])) && col_len < 6)
+				ft_isdigit(line[(*i)])) && col_len <= 5)
 		{
 			(*i)++;
 			col_len++;
@@ -24,7 +56,7 @@ int 	check_hex(char *line, int *i)
 	return (1);
 }
 
-int 	is_digit(char *line, int *i)
+int		is_digit(const char *line, int *i)
 {
 	if (line[(*i)] == '-')
 	{
@@ -43,7 +75,7 @@ int 	is_digit(char *line, int *i)
 	return (1);
 }
 
-int 	valid_line(char *line)
+int		valid_line(char *line)
 {
 	int i;
 
@@ -64,11 +96,11 @@ int 	valid_line(char *line)
 	return (1);
 }
 
-int 	count_line_length(char *line, t_map *map)
+int		count_line_length(char *line, t_map *map)
 {
-	char **split;
-	char **temp;
-	int len;
+	char	**split;
+	char	**temp;
+	int		len;
 
 	split = ft_strsplit(line, ' ');
 	len = 0;
