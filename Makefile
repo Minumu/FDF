@@ -6,7 +6,7 @@
 #    By: tshevchu <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/12/09 16:47:54 by tshevchu          #+#    #+#              #
-#    Updated: 2017/10/15 15:23:12 by tshevchu         ###   ########.fr        #
+#    Updated: 2017/10/17 12:53:30 by tshevchu         ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -16,9 +16,9 @@ FLAGS = -Wall -Wextra -Werror
 
 LIBFT = libft/
 
-LIBMLX = minilibx_macos/libmlx.a -framework OpenGL -framework AppKit
+LIBMLX = -lmlx -framework OpenGL -framework AppKit
 
-OBJECTS = additional2.o additional_func.o bresenham.o calculate.o key_processing.o main.o make_fdf_colorful.o structs.o validation.o
+OBJECTS = additional2.o additional_func.o bresenham.o calculate.o key_processing.o main.o make_fdf_colorful.o structs.o validation.o clean_all.o
 
 all: $(NAME)
 

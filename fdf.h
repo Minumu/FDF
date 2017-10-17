@@ -6,17 +6,15 @@
 /*   By: tshevchu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/15 13:47:23 by tshevchu          #+#    #+#             */
-/*   Updated: 2017/10/15 16:57:49 by tshevchu         ###   ########.fr       */
+/*   Updated: 2017/10/17 13:22:07 by tshevchu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FDF_H
 # define FDF_H
 # include "libft/include/libft.h"
-# include "minilibx_macos/mlx.h"
+# include <mlx.h>
 # include <math.h>
-
-# include <stdio.h>
 
 typedef struct	s_draw
 {
@@ -36,7 +34,7 @@ typedef struct	s_map
 	char		**map;
 	int			map_x;
 	int			map_y;
-	int 		len;
+	int			len;
 	int			color;
 }				t_map;
 
@@ -80,7 +78,7 @@ typedef struct	s_all
 t_all			*init_all(void);
 int				count_line_length(char *line, t_map *map);
 int				valid_line(char *line);
-int 			is_error(char *line, t_all *all);
+int				is_error(char *line, t_all *all);
 void			record_color(t_map *map, t_position *pos);
 void			init_color(t_position *pos, int i);
 void			record_static_color(char *line, t_map *map,
@@ -99,5 +97,6 @@ char			**ft_strdup_double_arr(char **src);
 int				find_abs(int nb);
 double			find_abs_double(double nb);
 void			free_double_arr(char **arr);
+void			clean_all(t_all *all);
 
 #endif

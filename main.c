@@ -6,7 +6,7 @@
 /*   By: tshevchu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/15 14:31:34 by tshevchu          #+#    #+#             */
-/*   Updated: 2017/10/15 15:24:50 by tshevchu         ###   ########.fr       */
+/*   Updated: 2017/10/17 13:12:10 by tshevchu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,8 @@ void	init_image(t_all *all, char av[1])
 	if (all->map->color == 0)
 		record_color(all->map, all->pos);
 	centering(all);
-	all->pos->re_coord = (int**)malloc(sizeof(int*) * all->map->map_x * all->map->map_y);
+	all->pos->re_coord = (int**)malloc(sizeof(int*) * all->map->map_x *
+						all->map->map_y);
 	while (i < all->map->map_x * all->map->map_y)
 	{
 		all->pos->re_coord[i] = malloc(sizeof(int) * 3);

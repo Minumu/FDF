@@ -6,7 +6,7 @@
 /*   By: tshevchu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/15 13:52:07 by tshevchu          #+#    #+#             */
-/*   Updated: 2017/10/15 15:28:58 by tshevchu         ###   ########.fr       */
+/*   Updated: 2017/10/17 13:01:28 by tshevchu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,20 +38,9 @@ int		key_processing2(int keycode, t_all *all)
 	return (0);
 }
 
-int		key_processing(int keycode, t_all *all)
+int		key_processing_angle(int keycode, t_all *all)
 {
-	if (keycode == 53)
-	{
-		mlx_destroy_window(all->draw->mlx, all->draw->win);
-		exit(0);
-	}
-	if (keycode == 13)
-	{
-		all->pos->alpha = all->pos->alpha + (M_PI / 180 * 5);
-		if (all->pos->alpha > M_PI)
-			all->pos->alpha = M_PI - 0.05;
-	}
-	else if (keycode == 1)
+	if (keycode == 1)
 	{
 		all->pos->alpha = all->pos->alpha - (M_PI / 180 * 5);
 		if (all->pos->alpha < 0)
@@ -75,6 +64,25 @@ int		key_processing(int keycode, t_all *all)
 		all->pos->gamma = all->pos->gamma - (M_PI / 180 * 5);
 	else
 		key_processing2(keycode, all);
+	return (0);
+}
+
+int		key_processing(int keycode, t_all *all)
+{
+	if (keycode == 53)
+	{
+		mlx_destroy_window(all->draw->mlx, all->draw->win);
+		clean_all(all);
+		exit(0);
+	}
+	if (keycode == 13)
+	{
+		all->pos->alpha = all->pos->alpha + (M_PI / 180 * 5);
+		if (all->pos->alpha > M_PI)
+			all->pos->alpha = M_PI - 0.05;
+	}
+	else
+		key_processing_angle(keycode, all);
 	mlx_destroy_image(all->draw->mlx, all->draw->img_w);
 	do_draw(all);
 	return (0);
