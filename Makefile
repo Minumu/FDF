@@ -16,7 +16,7 @@ FLAGS = -Wall -Wextra -Werror
 
 LIBFT = libft/
 
-LIBMLX = -lmlx -framework OpenGL -framework AppKit
+LIBMLX = minilibx_macos/libmlx.a -framework OpenGL -framework AppKit
 
 OBJECTS = additional2.o additional_func.o bresenham.o calculate.o key_processing.o main.o make_fdf_colorful.o structs.o validation.o clean_all.o
 
